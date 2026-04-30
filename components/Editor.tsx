@@ -66,6 +66,7 @@ export default function Editor() {
   const [previewOpen, setPreviewOpen] = useState(false)
   const [sheetHeight, setSheetHeight] = useState(60) // vh
   const [tokens, setTokens] = useState<TokenMap>({})
+  const [dir, setDir] = useState<'ltr' | 'rtl'>('ltr')
 
   const tokensRef = useRef<TokenMap>({})
 
@@ -83,10 +84,15 @@ export default function Editor() {
     immediatelyRender: false,
     editorProps: {
       attributes: {
-        class: 'outline-none min-h-[297mm] px-5 py-4 prose prose-sm sm:prose max-w-none',
+        class: 'outline-none min-h-[297mm] min-w-full px-5 py-4 prose prose-sm sm:prose max-w-none',
       },
     },
   })
+
+  useEffect(() => {
+    if (!editor) return
+    editor.view.dom.setAttribute('dir', dir)
+  }, [editor, dir])
 
   // PDF generation state
   const [pdfUrl, setPdfUrl] = useState<string | null>(null)
@@ -225,6 +231,16 @@ export default function Editor() {
         <Divider />
 
         <TokenDropdown editor={editor} tokens={tokens} />
+
+        <Divider />
+
+        <ToolbarButton
+          title={dir === 'ltr' ? 'Switch to RTL' : 'Switch to LTR'}
+          onClick={() => setDir(d => d === 'ltr' ? 'rtl' : 'ltr')}
+          active={dir === 'rtl'}
+        >
+          {dir === 'ltr' ? 'RTL' : 'LTR'}
+        </ToolbarButton>
 
         {/* Push actions to the right */}
         <div className="ml-auto flex items-center gap-2">

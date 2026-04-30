@@ -6,6 +6,7 @@ import Placeholder from '@tiptap/extension-placeholder'
 import { useEffect, useRef, useState } from 'react'
 import { FileTextIcon, DownloadIcon, Loader2Icon, PanelRightIcon, SlidersHorizontalIcon } from 'lucide-react'
 import { createTokenExtension } from '@/components/TokenExtension'
+import { Uppercase, Lowercase, Capitalize } from '@/components/CaseExtension'
 import { TokenDropdown } from '@/components/TokenDropdown'
 import { MOCK_TOKENS, type TokenMap } from '@/lib/tokens'
 import { Button } from '@/components/ui/button'
@@ -85,6 +86,18 @@ function ToolbarButtons({
       </ToolbarButton>
       <ToolbarButton title="Code" onClick={() => editor?.chain().focus().toggleCode().run()} active={editor?.isActive('code')}>
         {'<>'}
+      </ToolbarButton>
+
+      <Divider />
+
+      <ToolbarButton title="Uppercase" onClick={() => editor?.chain().focus().toggleUppercase().run()} active={editor?.isActive('uppercase')}>
+        AA
+      </ToolbarButton>
+      <ToolbarButton title="Lowercase" onClick={() => editor?.chain().focus().toggleLowercase().run()} active={editor?.isActive('lowercase')}>
+        aa
+      </ToolbarButton>
+      <ToolbarButton title="Capitalize" onClick={() => editor?.chain().focus().toggleCapitalize().run()} active={editor?.isActive('capitalize')}>
+        Aa
       </ToolbarButton>
 
       <Divider />
@@ -176,7 +189,7 @@ export default function Editor() {
   const tokenExtension = useRef(createTokenExtension(tokensRef)).current
 
   const editor = useEditor({
-    extensions: [StarterKit, tokenExtension, Placeholder.configure({ placeholder: 'Start writing your document…' })],
+    extensions: [StarterKit, tokenExtension, Uppercase, Lowercase, Capitalize, Placeholder.configure({ placeholder: 'Start writing your document…' })],
     content: '',
     immediatelyRender: false,
     editorProps: {

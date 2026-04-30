@@ -1,10 +1,10 @@
 'use client'
 
-import { useEditor, EditorContent } from '@tiptap/react'
+import { useEditor, EditorContent, type Editor as TipTapEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Placeholder from '@tiptap/extension-placeholder'
 import { useEffect, useRef, useState } from 'react'
-import { FileTextIcon, DownloadIcon, Loader2Icon, PanelRightIcon } from 'lucide-react'
+import { FileTextIcon, DownloadIcon, Loader2Icon, PanelRightIcon, SlidersHorizontalIcon } from 'lucide-react'
 import { createTokenExtension } from '@/components/TokenExtension'
 import { TokenDropdown } from '@/components/TokenDropdown'
 import { MOCK_TOKENS, type TokenMap } from '@/lib/tokens'
@@ -61,12 +61,109 @@ function Divider() {
   return <div className="w-px h-6 bg-border self-center mx-0.5" />
 }
 
+function ToolbarButtons({
+  editor,
+  tokens,
+  dir,
+  onDirToggle,
+}: {
+  editor: TipTapEditor | null
+  tokens: TokenMap
+  dir: 'ltr' | 'rtl'
+  onDirToggle: () => void
+}) {
+  return (
+    <>
+      <ToolbarButton title="Bold" onClick={() => editor?.chain().focus().toggleBold().run()} active={editor?.isActive('bold')}>
+        <strong>B</strong>
+      </ToolbarButton>
+      <ToolbarButton title="Italic" onClick={() => editor?.chain().focus().toggleItalic().run()} active={editor?.isActive('italic')}>
+        <em>I</em>
+      </ToolbarButton>
+      <ToolbarButton title="Strikethrough" onClick={() => editor?.chain().focus().toggleStrike().run()} active={editor?.isActive('strike')}>
+        <s>S</s>
+      </ToolbarButton>
+      <ToolbarButton title="Code" onClick={() => editor?.chain().focus().toggleCode().run()} active={editor?.isActive('code')}>
+        {'<>'}
+      </ToolbarButton>
+
+      <Divider />
+
+      <ToolbarButton title="Heading 1" onClick={() => editor?.chain().focus().toggleHeading({ level: 1 }).run()} active={editor?.isActive('heading', { level: 1 })}>H1</ToolbarButton>
+      <ToolbarButton title="Heading 2" onClick={() => editor?.chain().focus().toggleHeading({ level: 2 }).run()} active={editor?.isActive('heading', { level: 2 })}>H2</ToolbarButton>
+      <ToolbarButton title="Heading 3" onClick={() => editor?.chain().focus().toggleHeading({ level: 3 }).run()} active={editor?.isActive('heading', { level: 3 })}>H3</ToolbarButton>
+
+      <Divider />
+
+      <ToolbarButton title="Bullet list" onClick={() => editor?.chain().focus().toggleBulletList().run()} active={editor?.isActive('bulletList')}>
+        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>
+          <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+        </svg>
+      </ToolbarButton>
+      <ToolbarButton title="Ordered list" onClick={() => editor?.chain().focus().toggleOrderedList().run()} active={editor?.isActive('orderedList')}>
+        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/>
+          <path d="M4 6h1v4"/><path d="M4 10h2"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/>
+        </svg>
+      </ToolbarButton>
+      <ToolbarButton title="Blockquote" onClick={() => editor?.chain().focus().toggleBlockquote().run()} active={editor?.isActive('blockquote')}>
+        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/>
+          <path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/>
+        </svg>
+      </ToolbarButton>
+      <ToolbarButton title="Code block" onClick={() => editor?.chain().focus().toggleCodeBlock().run()} active={editor?.isActive('codeBlock')}>
+        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+        </svg>
+      </ToolbarButton>
+
+      <Divider />
+
+      <ToolbarButton title="Horizontal rule" onClick={() => editor?.chain().focus().setHorizontalRule().run()}>
+        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+      </ToolbarButton>
+
+      <Divider />
+
+      <ToolbarButton title="Undo" onClick={() => editor?.chain().focus().undo().run()} disabled={!editor?.can().undo()}>
+        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M3 7v6h6"/><path d="M3 13C5.5 7.5 11 5 17 7s9 8 6 14"/>
+        </svg>
+      </ToolbarButton>
+      <ToolbarButton title="Redo" onClick={() => editor?.chain().focus().redo().run()} disabled={!editor?.can().redo()}>
+        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M21 7v6h-6"/><path d="M21 13C18.5 7.5 13 5 7 7s-9 8-6 14"/>
+        </svg>
+      </ToolbarButton>
+
+      <Divider />
+
+      <TokenDropdown editor={editor} tokens={tokens} />
+
+      <Divider />
+
+      <ToolbarButton
+        title={dir === 'ltr' ? 'Switch to RTL' : 'Switch to LTR'}
+        onClick={onDirToggle}
+        active={dir === 'rtl'}
+      >
+        {dir === 'ltr' ? 'RTL' : 'LTR'}
+      </ToolbarButton>
+    </>
+  )
+}
+
 export default function Editor() {
   const [activeTab, setActiveTab] = useState<PreviewTab>('html')
   const [previewOpen, setPreviewOpen] = useState(false)
   const [sheetHeight, setSheetHeight] = useState(60) // vh
   const [tokens, setTokens] = useState<TokenMap>({})
   const [dir, setDir] = useState<'ltr' | 'rtl'>('ltr')
+  const [toolbarOpen, setToolbarOpen] = useState(false)
 
   const tokensRef = useRef<TokenMap>({})
 
@@ -159,89 +256,15 @@ export default function Editor() {
   }, [editor])
 
   return (
-    <div className="flex flex-col gap-6">
-      {/* Sticky full-width toolbar */}
-      <div className="fixed top-0 left-0 right-0 z-50 flex items-center gap-1 px-4 py-2 border-b border-border bg-muted/95 backdrop-blur-sm flex-wrap shadow-sm">
-        <ToolbarButton title="Bold" onClick={() => editor?.chain().focus().toggleBold().run()} active={editor?.isActive('bold')}>
-          <strong>B</strong>
-        </ToolbarButton>
-        <ToolbarButton title="Italic" onClick={() => editor?.chain().focus().toggleItalic().run()} active={editor?.isActive('italic')}>
-          <em>I</em>
-        </ToolbarButton>
-        <ToolbarButton title="Strikethrough" onClick={() => editor?.chain().focus().toggleStrike().run()} active={editor?.isActive('strike')}>
-          <s>S</s>
-        </ToolbarButton>
-        <ToolbarButton title="Code" onClick={() => editor?.chain().focus().toggleCode().run()} active={editor?.isActive('code')}>
-          {'<>'}
-        </ToolbarButton>
-
-        <Divider />
-
-        <ToolbarButton title="Heading 1" onClick={() => editor?.chain().focus().toggleHeading({ level: 1 }).run()} active={editor?.isActive('heading', { level: 1 })}>H1</ToolbarButton>
-        <ToolbarButton title="Heading 2" onClick={() => editor?.chain().focus().toggleHeading({ level: 2 }).run()} active={editor?.isActive('heading', { level: 2 })}>H2</ToolbarButton>
-        <ToolbarButton title="Heading 3" onClick={() => editor?.chain().focus().toggleHeading({ level: 3 }).run()} active={editor?.isActive('heading', { level: 3 })}>H3</ToolbarButton>
-
-        <Divider />
-
-        <ToolbarButton title="Bullet list" onClick={() => editor?.chain().focus().toggleBulletList().run()} active={editor?.isActive('bulletList')}>
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>
-            <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
-          </svg>
-        </ToolbarButton>
-        <ToolbarButton title="Ordered list" onClick={() => editor?.chain().focus().toggleOrderedList().run()} active={editor?.isActive('orderedList')}>
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/>
-            <path d="M4 6h1v4"/><path d="M4 10h2"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/>
-          </svg>
-        </ToolbarButton>
-        <ToolbarButton title="Blockquote" onClick={() => editor?.chain().focus().toggleBlockquote().run()} active={editor?.isActive('blockquote')}>
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/>
-            <path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/>
-          </svg>
-        </ToolbarButton>
-        <ToolbarButton title="Code block" onClick={() => editor?.chain().focus().toggleCodeBlock().run()} active={editor?.isActive('codeBlock')}>
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
-          </svg>
-        </ToolbarButton>
-
-        <Divider />
-
-        <ToolbarButton title="Horizontal rule" onClick={() => editor?.chain().focus().setHorizontalRule().run()}>
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="5" y1="12" x2="19" y2="12"/>
-          </svg>
-        </ToolbarButton>
-
-        <Divider />
-
-        <ToolbarButton title="Undo" onClick={() => editor?.chain().focus().undo().run()} disabled={!editor?.can().undo()}>
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M3 7v6h6"/><path d="M3 13C5.5 7.5 11 5 17 7s9 8 6 14"/>
-          </svg>
-        </ToolbarButton>
-        <ToolbarButton title="Redo" onClick={() => editor?.chain().focus().redo().run()} disabled={!editor?.can().redo()}>
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M21 7v6h-6"/><path d="M21 13C18.5 7.5 13 5 7 7s-9 8-6 14"/>
-          </svg>
-        </ToolbarButton>
-
-        <Divider />
-
-        <TokenDropdown editor={editor} tokens={tokens} />
-
-        <Divider />
-
-        <ToolbarButton
-          title={dir === 'ltr' ? 'Switch to RTL' : 'Switch to LTR'}
-          onClick={() => setDir(d => d === 'ltr' ? 'rtl' : 'ltr')}
-          active={dir === 'rtl'}
-        >
-          {dir === 'ltr' ? 'RTL' : 'LTR'}
-        </ToolbarButton>
-
+    <div className="flex flex-col sm:gap-6">
+      {/* Sticky full-width toolbar — desktop only */}
+      <div className="hidden sm:flex fixed top-0 left-0 right-0 z-50 items-center gap-1 px-4 py-2 border-b border-border bg-muted/95 backdrop-blur-sm flex-wrap shadow-sm">
+        <ToolbarButtons
+          editor={editor}
+          tokens={tokens}
+          dir={dir}
+          onDirToggle={() => setDir(d => d === 'ltr' ? 'rtl' : 'ltr')}
+        />
         {/* Push actions to the right */}
         <div className="ml-auto flex items-center gap-2">
           <Button
@@ -266,6 +289,62 @@ export default function Editor() {
           </Button>
         </div>
       </div>
+
+      {/* FAKE toolbar placeholder — desktop only, reserves space so content isn't hidden under fixed bar */}
+      <div className="hidden sm:block h-2 shrink-0" />
+
+      {/* Mobile bottom toolbar sheet */}
+      <Sheet open={toolbarOpen} onOpenChange={setToolbarOpen}>
+        <SheetContent side="bottom" className="sm:hidden flex flex-col p-0 gap-0">
+          <SheetHeader className="px-4 py-2 border-b border-border shrink-0">
+            <SheetTitle className="text-sm font-semibold">Formatting</SheetTitle>
+          </SheetHeader>
+          <div className="flex flex-wrap gap-1.5 p-4">
+            <ToolbarButtons
+              editor={editor}
+              tokens={tokens}
+              dir={dir}
+              onDirToggle={() => setDir(d => d === 'ltr' ? 'rtl' : 'ltr')}
+            />
+          </div>
+        </SheetContent>
+      </Sheet>
+
+      {/* Mobile fixed bottom action bar */}
+      <div className="sm:hidden fixed bottom-0 left-0 right-0 z-50 flex items-center gap-2 px-4 py-2 border-t border-border bg-muted/95 backdrop-blur-sm shadow-sm">
+        <Button
+          variant="outline"
+          size="sm"
+          className="h-9 gap-1.5 text-sm"
+          onClick={() => setToolbarOpen(true)}
+        >
+          <SlidersHorizontalIcon className="size-3.5" />
+          Format
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          className="h-9 gap-1.5 text-sm"
+          onClick={() => setPreviewOpen(true)}
+        >
+          <PanelRightIcon className="size-3.5" />
+          Preview
+        </Button>
+        <Button
+          size="sm"
+          className="h-9 gap-1.5 text-sm ml-auto"
+          onClick={generatePdf}
+          disabled={pdfLoading || isEmpty}
+        >
+          {pdfLoading
+            ? <Loader2Icon className="size-3.5 animate-spin" />
+            : <FileTextIcon className="size-3.5" />}
+          {pdfLoading ? 'Generating…' : 'Generate PDF'}
+        </Button>
+      </div>
+
+      {/* Spacer so content isn't hidden under mobile bottom bar */}
+      <div className="sm:hidden h-14 shrink-0" />
 
       {/* Editor card */}
       <div className="rounded-xl border border-border bg-card shadow-sm overflow-hidden">

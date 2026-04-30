@@ -129,6 +129,70 @@
   font-size: 0.78rem;
 }
 
+/* Token autocomplete suggestion popup */
+.token-suggestion-popup {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+  padding: 0.25rem;
+  min-width: 220px;
+  max-width: 320px;
+  max-height: 320px;
+  overflow-y: auto;
+  font-family: inherit;
+  font-size: 0.875rem;
+}
+
+.token-suggestion-category {
+  padding: 0.35rem 0.6rem 0.2rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #6b7280;
+}
+
+.token-suggestion-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.35rem 0.6rem;
+  border-radius: 0.35rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  gap: 0.5rem;
+  color: inherit;
+}
+
+.token-suggestion-item:hover,
+.token-suggestion-item.is-selected {
+  background: #eff6ff;
+}
+
+.token-suggestion-label {
+  flex: 1;
+  color: #111827;
+  font-weight: 500;
+}
+
+.token-suggestion-key {
+  font-family: ui-monospace, monospace;
+  font-size: 0.72rem;
+  color: #1d4ed8;
+  opacity: 0.75;
+  white-space: nowrap;
+}
+
+.token-suggestion-empty {
+  padding: 0.5rem 0.75rem;
+  color: #9ca3af;
+  font-size: 0.85rem;
+}
+
 :root {
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);

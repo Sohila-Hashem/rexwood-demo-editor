@@ -7,6 +7,7 @@ export const FAKE_VALUES: Record<string, string> = {
   date:                     new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
   start_date:               'January 1, 2025',
   end_date:                 'December 31, 2027',
+  type:                     'Investment Management Agreement',
 
   // Company
   company_name:             'Rexwood Capital',

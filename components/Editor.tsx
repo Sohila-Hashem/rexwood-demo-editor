@@ -5,7 +5,7 @@ import StarterKit from '@tiptap/starter-kit'
 import Placeholder from '@tiptap/extension-placeholder'
 import { useEffect, useRef, useState } from 'react'
 import { FileTextIcon, DownloadIcon, Loader2Icon, Maximize2Icon, Minimize2Icon } from 'lucide-react'
-import { TokenExtension } from '@/components/TokenExtension'
+import { createTokenExtension } from '@/components/TokenExtension'
 import { TokenDropdown } from '@/components/TokenDropdown'
 import { MOCK_TOKENS, type TokenMap } from '@/lib/tokens'
 import { Button } from '@/components/ui/button'
@@ -53,13 +53,20 @@ export default function Editor() {
   const [isPreviewMaximized, setIsPreviewMaximized] = useState(false)
   const [tokens, setTokens] = useState<TokenMap>({})
 
+  // Keep a ref so the extension closures always see the latest token map
+  const tokensRef = useRef<TokenMap>({})
+
   // Simulate API fetch — replace with: fetch('/api/tokens').then(r => r.json()).then(setTokens)
   useEffect(() => {
+    tokensRef.current = MOCK_TOKENS
     setTokens(MOCK_TOKENS)
   }, [])
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const tokenExtension = useRef(createTokenExtension(tokensRef)).current
+
   const editor = useEditor({
-    extensions: [StarterKit, TokenExtension, Placeholder.configure({ placeholder: 'Start writing your document…' })],
+    extensions: [StarterKit, tokenExtension, Placeholder.configure({ placeholder: 'Start writing your document…' })],
     content: '',
     immediatelyRender: false,
     editorProps: {

@@ -11,6 +11,7 @@ export const MOCK_TOKENS: TokenMap = {
   date:                     { label: 'Agreement Date',           category: 'Agreement' },
   start_date:               { label: 'Start Date',               category: 'Agreement' },
   end_date:                 { label: 'End Date',                 category: 'Agreement' },
+  type:                     { label: 'Agreement Type',           category: 'Agreement' },
 
   // Company
   company_name:             { label: 'Company Name',             category: 'Company' },

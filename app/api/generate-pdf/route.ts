@@ -37,6 +37,32 @@ function collectTokenKeys(node: JSONContent): string[] {
 }
 
 // ---------------------------------------------------------------------------
+// Page margin configuration (adjust these to change PDF margins)
+// ---------------------------------------------------------------------------
+const PDF_MARGINS = {
+  top:    '20mm',
+  right:  '20mm',
+  bottom: '20mm',
+  left:   '20mm',
+} as const
+
+function buildHeaderHTML(): string {
+  return `<div style="font-size:11px; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; color:#94a3b8; width:100%; padding:6px 20mm; box-sizing:border-box; display:flex; justify-content:space-between; align-items:center; background-image:linear-gradient(#0f172a,#0f172a); border-bottom:3px solid #c99f00;">
+    <span style="font-size:13px; font-weight:700; color:#f8fafc; letter-spacing:-0.02em;">Rex<span style="color:#c99f00;">wood</span></span>
+    <span style="text-align:right; line-height:1.5; color:#94a3b8;">
+      Generated on ${new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })}&nbsp;&nbsp;·&nbsp;&nbsp;Confidential Document
+    </span>
+  </div>`
+}
+
+function buildFooterHTML(): string {
+  return `<div style="font-size:10px; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; color:#94a3b8; width:100%; padding-block-start:5mm; padding-inline:20mm; box-sizing:border-box; display:flex; justify-content:space-between; align-items:center; background-image:linear-gradient(#f8fafc,#f8fafc); border-top:1px solid #e2e8f0;">
+    <span>This document was automatically generated and may contain placeholder values.</span>
+    <span style="color:#94a3b8; font-weight:500;">REXWOOD &nbsp;·&nbsp; CONFIDENTIAL &nbsp;·&nbsp; Page <span class="pageNumber"></span> of <span class="totalPages"></span></span>
+  </div>`
+}
+
+// ---------------------------------------------------------------------------
 // Build a self-contained HTML document for Puppeteer
 // ---------------------------------------------------------------------------
 function buildPageHTML(body: string): string {
@@ -101,7 +127,6 @@ function buildPageHTML(body: string): string {
     /* ── Main content ───────────────────────────────────────── */
     .content {
       flex: 1;
-      padding: 48px 56px 40px;
       max-width: 100%;
     }
 
@@ -151,7 +176,7 @@ function buildPageHTML(body: string): string {
       margin: 8px 0 14px;
     }
     ul { list-style-type: disc; }
-    ul li::marker { color: #3b82f6; font-size: 1.1em; }
+    ul li::marker { color: #e8bc00; font-size: 1.1em; }
     ol { list-style-type: decimal; }
     li {
       margin: 4px 0;
@@ -160,14 +185,14 @@ function buildPageHTML(body: string): string {
 
     /* ── Blockquote ─────────────────────────────────────────── */
     blockquote {
-      border-left: 3px solid #3b82f6;
+      border-left: 3px solid #e8bc00;
       background: #eff6ff;
       padding: 14px 18px;
       margin: 16px 0;
       border-radius: 0 6px 6px 0;
     }
     blockquote p {
-      color: #1e40af;
+      color: #e8bc00;
       font-style: italic;
       margin: 0;
     }
@@ -229,23 +254,9 @@ function buildPageHTML(body: string): string {
 </head>
 <body>
   <div class="page">
-    <header class="page-header">
-      <div class="brand">Rex<span>wood</span></div>
-      <div class="meta">
-        Generated on ${new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })}<br/>
-        Confidential Document
-      </div>
-    </header>
-    <div class="accent-bar"></div>
-
     <main class="content">
       ${body}
     </main>
-
-    <footer class="page-footer">
-      <span class="note">This document was automatically generated and may contain placeholder values.</span>
-      <span class="stamp">REXWOOD &nbsp;·&nbsp; CONFIDENTIAL</span>
-    </footer>
   </div>
 </body>
 </html>`
@@ -314,7 +325,10 @@ export async function POST(req: NextRequest) {
     const pdf = await page.pdf({
       format: 'A4',
       printBackground: true,
-      margin: { top: '0', right: '0', bottom: '0', left: '0' },
+      margin: PDF_MARGINS,
+      headerTemplate: buildHeaderHTML(),
+      footerTemplate: buildFooterHTML(),
+      displayHeaderFooter: true
     })
     await browser.close()
     pdfBuffer = Buffer.from(pdf)
